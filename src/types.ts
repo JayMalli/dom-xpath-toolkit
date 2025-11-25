@@ -30,6 +30,7 @@ export interface XPathGenerator {
     options?: XPathOptions
   ) => Element | null;
   getXPathForNode: (node: Element, options?: XPathOptions) => string;
+  getShortestUniqueXPath: (node: Element, options?: XPathOptions) => string;
   findCommonAncestorXPath: (nodes: Element[], options?: XPathOptions) => string | null;
   getXPathForSelection: (selection?: Selection | null, options?: XPathOptions) => SelectionResult;
   normalizeXPath: (xpath: string) => string;

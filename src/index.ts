@@ -3,6 +3,7 @@ import { defaultGenerator } from './default-generator';
 export const {
 	resolveXPath,
 	getXPathForNode,
+	getShortestUniqueXPath,
 	findCommonAncestorXPath,
 	getXPathForSelection,
 	normalizeXPath,
@@ -26,3 +27,25 @@ export type {
 	XPathHeuristicContext,
 	XPathSegmentContext,
 } from './plugins';
+
+// Element helper utilities
+export {
+	getElementByXPath,
+	getElementText,
+	getXPathById,
+	getXPathByClass,
+	getXPathByTag,
+	getXPathByLabel,
+	getXPathByAttribute,
+	getXPathBySelector,
+	getXPathByText,
+	select,
+	selectOne,
+	getAttributeValue,
+	getAttributeValues,
+	isXPathSyntaxValid,
+	doesXPathResolveToElement,
+	cssToXPath,
+	xpathToCss,
+} from './utils/element-helpers';
+export type { ElementSelectorOptions } from './utils/element-helpers';

@@ -33,29 +33,48 @@ const idHeuristic: XPathHeuristic = {
   },
 };
 
+const ATTRIBUTE_MATCHERS: Array<(name: string) => boolean> = [
+  name => name.startsWith('data-'),
+  name => name.startsWith('aria-'),
+  name => name === 'role',
+  name => name === 'name',
+  name => name === 'placeholder',
+  name => name === 'title',
+];
+
 const uniqueAttributeHeuristic: XPathHeuristic = {
   name: 'default:unique-attribute',
   provideSelector(context: XPathHeuristicContext): string | null {
     const { node, options, doc } = context;
-    if (!options.preferUniqueAttributes.length) {
-      return null;
-    }
     // Skip universal selectors when a custom root (non-document-root) is specified
     const isCustomRoot = isElement(options.root) && options.root !== doc.documentElement;
     if (isCustomRoot) {
       return null;
     }
     const scope = getScope(options, node);
-    for (const attribute of options.preferUniqueAttributes) {
-      if (!node.hasAttribute(attribute)) {
+    const attributeEntries = Array.from(node.attributes ?? []);
+    if (options.preferUniqueAttributes.length) {
+      for (const attribute of options.preferUniqueAttributes) {
+        if (!node.hasAttribute(attribute)) {
+          continue;
+        }
+        const value = node.getAttribute(attribute);
+        if (!value) {
+          continue;
+        }
+        if (isAttributeUnique(node, attribute, scope)) {
+          return buildAttributeSelector(attribute, value);
+        }
+      }
+    }
+
+    for (const matcher of ATTRIBUTE_MATCHERS) {
+      const matchedAttribute = attributeEntries.find(attr => matcher(attr.name.toLowerCase()));
+      if (!matchedAttribute || !matchedAttribute.value) {
         continue;
       }
-      const value = node.getAttribute(attribute);
-      if (!value) {
-        continue;
-      }
-      if (isAttributeUnique(node, attribute, scope)) {
-        return buildAttributeSelector(attribute, value);
+      if (isAttributeUnique(node, matchedAttribute.name, scope)) {
+        return buildAttributeSelector(matchedAttribute.name, matchedAttribute.value);
       }
     }
     return null;

@@ -8,7 +8,14 @@ export interface NormalizedOptions {
   namespaceResolver: XPathNSResolver | null;
 }
 
-const DEFAULT_UNIQUE_ATTRIBUTES = ['data-testid', 'data-test', 'aria-label', 'name', 'class'];
+const DEFAULT_UNIQUE_ATTRIBUTES = [
+  'data-testid',
+  'data-test',
+  'aria-label',
+  'aria-labelledby',
+  'name',
+  'class',
+];
 
 export const DEFAULT_OPTIONS: NormalizedOptions = {
   preferId: true,

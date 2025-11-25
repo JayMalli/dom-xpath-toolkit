@@ -1,7 +1,7 @@
 {
   "name": "dom-xpath-toolkit",
-  "version": "0.1.0",
-  "description": "Robust utilities for generating and resolving DOM XPath expressions.",
+  "version": "0.2.0",
+  "description": "Robust utilities for generating and resolving DOM XPath expressions with element helper functions.",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

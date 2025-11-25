@@ -11,9 +11,10 @@ export function createHeuristicRegistry(initial: XPathHeuristic[] = DEFAULT_HEUR
       return [...heuristics];
     },
     register(...entries: XPathHeuristic[]): void {
-      for (const entry of entries) {
+      for (let i = entries.length - 1; i >= 0; i -= 1) {
+        const entry = entries[i];
         if (!heuristics.find((existing) => existing.name === entry.name)) {
-          heuristics.push(entry);
+          heuristics.unshift(entry);
         }
       }
     },

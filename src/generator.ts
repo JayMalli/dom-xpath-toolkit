@@ -59,80 +59,18 @@ export function createXPathGenerator(config?: XPathGeneratorConfig): XPathGenera
 
   const listHeuristics = (): XPathHeuristic[] => registry.list();
 
-  function resolveXPath(
-    xpath: string,
-    context?: Document | Element,
-    options?: XPathOptions
-  ): Element | null {
-    const normalizedPath = normalizeXPath(xpath);
-    if (!normalizedPath) {
-      return null;
-    }
-
-    const merged = mergeOptions(defaults, options);
-    const settings = normalizeOptions(merged);
-    const evalContext =
-      settings.root ?? context ?? (typeof document !== 'undefined' ? document : null);
-    if (!evalContext) {
-      return null;
-    }
-
-    const doc = getDocument(evalContext);
-    if (!doc) {
-      return null;
-    }
-
-    const resolver = settings.namespaceResolver ?? createNamespaceResolver(doc, evalContext);
-
-    // If evaluating from an Element context and the XPath starts with that element's tag,
-    // strip the leading tag to make it relative to the context element
-    let pathToEvaluate = normalizedPath;
-    if (isElement(evalContext) && normalizedPath.startsWith(`/${evalContext.tagName.toLowerCase()}/`)) {
-      // Remove the leading "/{tag}/" to get a relative path like "/p[1]/span"
-      // Then change the leading "/" to "./" to make it explicitly relative
-      const afterTag = normalizedPath.substring(evalContext.tagName.toLowerCase().length + 2);
-      pathToEvaluate = `./${afterTag}`;
-    } else if (isElement(evalContext) && normalizedPath === `/${evalContext.tagName.toLowerCase()}`) {
-      // The path is exactly the context element itself
-      return evalContext;
-    }
-
-    try {
-      const result = doc.evaluate(
-        pathToEvaluate,
-        evalContext,
-        resolver,
-        XPathResult.FIRST_ORDERED_NODE_TYPE,
-        null
-      );
-      const node = result.singleNodeValue;
-      return isElement(node) ? node : null;
-    } catch {
-      return null;
-    }
+  interface SelectorResult {
+    selector: string;
+    segments?: string[];
   }
 
-  function getXPathForNode(node: Element, options?: XPathOptions): string {
-    if (!isElement(node)) {
-      throw new TypeError('Expected an Element to compute XPath.');
-    }
-
-    const merged = mergeOptions(defaults, options);
-    const settings = normalizeOptions(merged);
-
-    const doc = getDocument(node);
-    const rootElement = getRootElement(node, settings, doc);
-
-    if (!rootElement) {
-      throw new Error('Unable to determine a document root for XPath computation.');
-    }
-
-    if (!(rootElement === node || rootElement.contains(node))) {
-      throw new Error('The provided node does not belong to the configured root.');
-    }
-
-    const heuristics = listHeuristics();
-
+  const buildSelectorResult = (
+    node: Element,
+    settings: NormalizedOptions,
+    rootElement: Element,
+    doc: Document | null,
+    heuristics: XPathHeuristic[]
+  ): SelectorResult => {
     const ancestorChain: Element[] = [];
     let walker: Element | null = node.parentElement;
     while (walker) {
@@ -154,7 +92,7 @@ export function createXPathGenerator(config?: XPathGeneratorConfig): XPathGenera
     for (const heuristic of heuristics) {
       const selector = heuristic.provideSelector?.(baseContext);
       if (selector) {
-        return normalizeXPath(selector);
+        return { selector: normalizeXPath(selector) };
       }
     }
 
@@ -195,15 +133,213 @@ export function createXPathGenerator(config?: XPathGeneratorConfig): XPathGenera
 
     const xpath = `/${segments.join('/')}`;
     let normalized = normalizeXPath(xpath);
+    let finalizedSegments: string[] | undefined = [...segments];
 
     for (const heuristic of heuristics) {
       const adjusted = heuristic.afterGenerate?.(baseContext, normalized);
       if (typeof adjusted === 'string' && adjusted.length) {
-        normalized = normalizeXPath(adjusted);
+        const updated = normalizeXPath(adjusted);
+        if (updated !== normalized) {
+          finalizedSegments = undefined;
+        }
+        normalized = updated;
       }
     }
 
-    return normalized;
+    return {
+      selector: normalized,
+      segments: finalizedSegments,
+    };
+  };
+
+  const buildEvaluationPlan = (xpath: string, context: Document | Element): { node?: Element; expression?: string } => {
+    if (isElement(context)) {
+      const tagName = context.tagName.toLowerCase();
+      if (xpath === `/${tagName}`) {
+        return { node: context };
+      }
+      if (xpath.startsWith(`/${tagName}/`)) {
+        const afterTag = xpath.substring(tagName.length + 2);
+        return { expression: `./${afterTag}` };
+      }
+    }
+    return { expression: xpath };
+  };
+
+  const buildShortestCandidates = (segments: string[]): string[] => {
+    if (!segments.length) {
+      return [];
+    }
+    const candidates = new Set<string>();
+    const absolute = `/${segments.join('/')}`;
+    candidates.add(absolute);
+    candidates.add(`/${segments.map(stripSegmentIndex).join('/')}`);
+
+    for (let i = 0; i < segments.length; i += 1) {
+      const tail = segments.slice(i);
+      candidates.add(`//${tail.join('/')}`);
+      candidates.add(`//${tail.map(stripSegmentIndex).join('/')}`);
+    }
+
+    return Array.from(candidates)
+      .map((candidate) => normalizeXPath(candidate))
+      .filter((candidate) => candidate.length)
+      .sort((a, b) => a.length - b.length);
+  };
+
+  const stripSegmentIndex = (segment: string): string => segment.replace(/\[\d+\]$/u, '');
+
+  const matchesUniqueNode = (
+    xpath: string,
+    evalContext: Document | Element,
+    doc: Document,
+    resolver: XPathNSResolver | null,
+    target: Element
+  ): boolean => {
+    const normalized = normalizeXPath(xpath);
+    if (!normalized) {
+      return false;
+    }
+
+    const plan = buildEvaluationPlan(normalized, evalContext);
+    if (plan.node) {
+      return plan.node === target;
+    }
+
+    try {
+      const result = doc.evaluate(
+        plan.expression ?? normalized,
+        evalContext,
+        resolver,
+        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+        null
+      );
+      if (result.snapshotLength !== 1) {
+        return false;
+      }
+      const node = result.snapshotItem(0);
+      return node === target;
+    } catch {
+      return false;
+    }
+  };
+
+  function resolveXPath(
+    xpath: string,
+    context?: Document | Element,
+    options?: XPathOptions
+  ): Element | null {
+    const normalizedPath = normalizeXPath(xpath);
+    if (!normalizedPath) {
+      return null;
+    }
+
+    const merged = mergeOptions(defaults, options);
+    const settings = normalizeOptions(merged);
+    const evalContext =
+      settings.root ?? context ?? (typeof document !== 'undefined' ? document : null);
+    if (!evalContext) {
+      return null;
+    }
+
+    const doc = getDocument(evalContext);
+    if (!doc) {
+      return null;
+    }
+
+    const resolver = settings.namespaceResolver ?? createNamespaceResolver(doc, evalContext);
+
+    const plan = buildEvaluationPlan(normalizedPath, evalContext);
+
+    if (plan.node) {
+      return plan.node;
+    }
+
+    try {
+      const result = doc.evaluate(
+        plan.expression ?? normalizedPath,
+        evalContext,
+        resolver,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null
+      );
+      const node = result.singleNodeValue;
+      return isElement(node) ? node : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function getXPathForNode(node: Element, options?: XPathOptions): string {
+    if (!isElement(node)) {
+      throw new TypeError('Expected an Element to compute XPath.');
+    }
+
+    const merged = mergeOptions(defaults, options);
+    const settings = normalizeOptions(merged);
+
+    const doc = getDocument(node);
+    const rootElement = getRootElement(node, settings, doc);
+
+    if (!rootElement) {
+      throw new Error('Unable to determine a document root for XPath computation.');
+    }
+
+    if (!(rootElement === node || rootElement.contains(node))) {
+      throw new Error('The provided node does not belong to the configured root.');
+    }
+
+    const heuristics = listHeuristics();
+    const result = buildSelectorResult(node, settings, rootElement, doc, heuristics);
+    return result.selector;
+  }
+
+  function getShortestUniqueXPath(node: Element, options?: XPathOptions): string {
+    if (!isElement(node)) {
+      throw new TypeError('Expected an Element to compute XPath.');
+    }
+
+    const merged = mergeOptions(defaults, options);
+    const settings = normalizeOptions(merged);
+
+    const doc = getDocument(node);
+    const rootElement = getRootElement(node, settings, doc);
+
+    if (!rootElement) {
+      throw new Error('Unable to determine a document root for XPath computation.');
+    }
+
+    if (!(rootElement === node || rootElement.contains(node))) {
+      throw new Error('The provided node does not belong to the configured root.');
+    }
+
+    const heuristics = listHeuristics();
+    const result = buildSelectorResult(node, settings, rootElement, doc, heuristics);
+
+    if (!result.segments?.length) {
+      return result.selector;
+    }
+
+    const evalContext = settings.root ?? rootElement;
+    if (!evalContext) {
+      return result.selector;
+    }
+
+    const evaluationDoc = getDocument(evalContext) ?? doc ?? node.ownerDocument ?? null;
+    if (!evaluationDoc) {
+      return result.selector;
+    }
+
+    const resolver = settings.namespaceResolver ?? createNamespaceResolver(evaluationDoc, evalContext);
+    const candidates = buildShortestCandidates(result.segments);
+
+    for (const candidate of candidates) {
+      if (matchesUniqueNode(candidate, evalContext, evaluationDoc, resolver, node)) {
+        return candidate;
+      }
+    }
+
+    return result.selector;
   }
 
   function findCommonAncestorXPath(
@@ -281,6 +417,7 @@ export function createXPathGenerator(config?: XPathGeneratorConfig): XPathGenera
   return {
     resolveXPath,
     getXPathForNode,
+    getShortestUniqueXPath,
     findCommonAncestorXPath,
     getXPathForSelection,
     normalizeXPath,

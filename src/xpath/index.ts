@@ -3,6 +3,7 @@ import { defaultGenerator } from '../default-generator';
 export const {
   resolveXPath,
   getXPathForNode,
+  getShortestUniqueXPath,
   findCommonAncestorXPath,
   getXPathForSelection,
   normalizeXPath,

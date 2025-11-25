@@ -7,11 +7,13 @@ import * as selectionModule from '../src/selection';
 describe('package exports', () => {
   it('exposes core functions at root', () => {
     expect(typeof root.getXPathForNode).toBe('function');
+    expect(typeof root.getShortestUniqueXPath).toBe('function');
     expect(typeof root.getXPathForSelection).toBe('function');
   });
 
   it('exposes subpath modules', () => {
     expect(typeof xpathModule.getXPathForNode).toBe('function');
+    expect(typeof xpathModule.getShortestUniqueXPath).toBe('function');
     expect(typeof selectionModule.getXPathForSelection).toBe('function');
   });
 });

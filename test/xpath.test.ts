@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   findCommonAncestorXPath,
   getXPathForNode,
+  getShortestUniqueXPath,
   getXPathForSelection,
   isXPathMatch,
   normalizeXPath,
@@ -10,14 +11,21 @@ import {
 } from '../src/xpath';
 
 const FIXTURE = `
-  <div id="root">
+  <div id="root" data-route="home" role="main">
     <main data-testid="main">
-      <section class="content">
+      <section class="content" data-tracking="content-body">
         <p data-testid="first">Hello <span class="highlight">world</span></p>
         <p>Another <span data-test="special">paragraph</span></p>
       </section>
       <footer>
         <button name="save">Save</button>
+        <button data-action="login">Login</button>
+        <input
+          type="text"
+          aria-description="search field"
+          placeholder="Search"
+          title="Search Input"
+        />
       </footer>
     </main>
   </div>
@@ -49,6 +57,18 @@ describe('xpath toolkit', () => {
       expect(xpath).toBe('//*[@name="save"]');
     });
 
+    it('leverages unique data-* attributes automatically', () => {
+      const button = document.querySelector('button[data-action="login"]') as Element;
+      const xpath = getXPathForNode(button);
+      expect(xpath).toBe('//*[@data-action="login"]');
+    });
+
+    it('prefers aria/role/placeholder/title attributes when unique', () => {
+      const input = document.querySelector('input[aria-description]') as Element;
+      const xpath = getXPathForNode(input);
+      expect(xpath).toBe('//*[@aria-description="search field"]');
+    });
+
     it('adds indexes when siblings share the same tag', () => {
       const paragraph = document.querySelectorAll('section.content > p')[1] as Element;
       const xpath = getXPathForNode(paragraph, { minIndex: 'auto' });
@@ -68,6 +88,23 @@ describe('xpath toolkit', () => {
       const section = document.querySelector('section.content') as Element;
       const footer = document.querySelector('footer') as Element;
       expect(() => getXPathForNode(footer, { root: section })).toThrow();
+    });
+  });
+
+  describe('getShortestUniqueXPath', () => {
+    it('returns attribute-based selectors when available', () => {
+      const button = document.querySelector('button[data-action="login"]') as Element;
+      const xpath = getShortestUniqueXPath(button);
+      expect(xpath).toBe('//*[@data-action="login"]');
+      expect(resolveXPath(xpath)).toBe(button);
+    });
+
+    it('minimizes structural paths while remaining unique', () => {
+      const paragraph = document.querySelectorAll('section.content > p')[1] as Element;
+      const defaultXPath = getXPathForNode(paragraph, { minIndex: 'always' });
+      const shortestXPath = getShortestUniqueXPath(paragraph, { minIndex: 'always' });
+      expect(resolveXPath(shortestXPath)).toBe(paragraph);
+      expect(shortestXPath.length).toBeLessThanOrEqual(defaultXPath.length);
     });
   });
 
