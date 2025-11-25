@@ -1,0 +1,11 @@
+{
+  "entryPoints": ["src/index.ts"],
+  "plugin": ["typedoc-plugin-markdown"],
+  "out": "docs/api-reference",
+  "hideGenerator": true,
+  "categorizeByGroup": true,
+  "includeVersion": true,
+  "readme": "none",
+  "githubPages": false,
+  "tsconfig": "tsconfig.json"
+}

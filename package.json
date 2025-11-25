@@ -1,0 +1,116 @@
+{
+  "name": "dom-xpath-toolkit",
+  "version": "0.1.0",
+  "description": "Robust utilities for generating and resolving DOM XPath expressions.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./xpath": {
+      "import": "./dist/xpath.js",
+      "require": "./dist/xpath.cjs",
+      "types": "./dist/xpath.d.ts"
+    },
+    "./selection": {
+      "import": "./dist/selection.js",
+      "require": "./dist/selection.cjs",
+      "types": "./dist/selection.d.ts"
+    },
+    "./cli": {
+      "import": "./dist/cli.js",
+      "require": "./dist/cli.cjs",
+      "types": "./dist/cli.d.ts"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "bin": {
+    "dom-xpath": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "clean": "rimraf dist",
+    "lint": "eslint \"src/**/*.{ts,tsx}\" \"test/**/*.{ts,tsx}\"",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "type-check": "tsc --noEmit",
+    "check": "npm-run-all type-check lint && yarn test --run",
+    "prepare": "husky install",
+    "prepublishOnly": "npm run clean && npm run build && npm run test && npm run lint && npm run type-check",
+    "release": "npm run check && npm run lint:pkg && standard-version",
+    "lint:pkg": "npmPkgJsonLint .",
+    "audit": "npm audit --audit-level=moderate",
+    "lockfile:lint": "lockfile-lint --path package-lock.json --type npm --validate-https --allowed-hosts npm",
+    "security:test": "npm run audit && npm run lockfile:lint && npm run lint:pkg",
+    "security:report": "node scripts/security-report.mjs",
+    "docs:dev": "next dev docs/interactive-site",
+    "docs:build": "next build docs/interactive-site && next export docs/interactive-site --outdir docs/interactive-site/out",
+    "docs:api": "typedoc"
+  },
+  "keywords": [
+    "xpath",
+    "dom",
+    "browser",
+    "selection",
+    "utilities"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourname/dom-xpath-toolkit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourname/dom-xpath-toolkit/issues"
+  },
+  "homepage": "https://github.com/yourname/dom-xpath-toolkit#readme",
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "commander": "^11.0.0",
+    "jsdom": "^23.0.0"
+  },
+  "devDependencies": {
+    "@monaco-editor/react": "^4.5.0",
+    "@types/node": "^20.10.5",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.17",
+    "@typescript-eslint/eslint-plugin": "^8.48.0",
+    "@typescript-eslint/parser": "^8.48.0",
+    "@vitest/coverage-v8": "^1.3.1",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.0.0",
+    "lockfile-lint": "^4.12.0",
+    "next": "^15.0.0",
+    "npm-package-json-lint": "^8.0.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "rimraf": "^5.0.5",
+    "standard-version": "^9.5.0",
+    "tsup": "^7.0.0",
+    "typedoc": "^0.28.0",
+    "typedoc-plugin-markdown": "^4.9.0",
+    "typescript": "~5.5.0",
+    "vitest": "^1.3.1",
+    "zustand": "^4.5.0"
+  }
+}
