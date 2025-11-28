@@ -8,24 +8,24 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.cjs"
     },
     "./xpath": {
+      "types": "./dist/xpath.d.ts",
       "import": "./dist/xpath.js",
-      "require": "./dist/xpath.cjs",
-      "types": "./dist/xpath.d.ts"
+      "require": "./dist/xpath.cjs"
     },
     "./selection": {
+      "types": "./dist/selection.d.ts",
       "import": "./dist/selection.js",
-      "require": "./dist/selection.cjs",
-      "types": "./dist/selection.d.ts"
+      "require": "./dist/selection.cjs"
     },
     "./cli": {
+      "types": "./dist/cli.d.ts",
       "import": "./dist/cli.js",
-      "require": "./dist/cli.cjs",
-      "types": "./dist/cli.d.ts"
+      "require": "./dist/cli.cjs"
     }
   },
   "sideEffects": false,
@@ -55,7 +55,14 @@
     "security:report": "node scripts/security-report.mjs",
     "docs:dev": "next dev docs/interactive-site",
     "docs:build": "next build docs/interactive-site && next export docs/interactive-site --outdir docs/interactive-site/out",
-    "docs:api": "typedoc"
+    "docs:api": "typedoc",
+    "playground:sync": "node examples/playground/scripts/sync-toolkit.cjs",
+    "fixture:serve": "http-server . -p 4173 -c-1 --cors",
+    "preplaywright:test": "yarn build",
+    "playwright:test": "playwright test",
+    "preplaywright:ui": "yarn build",
+    "playwright:ui": "playwright test --ui",
+    "playwright:codegen": "playwright codegen"
   },
   "keywords": [
     "xpath",
@@ -86,15 +93,17 @@
   },
   "devDependencies": {
     "@monaco-editor/react": "^4.5.0",
+    "@playwright/test": "^1.57.0",
     "@types/node": "^20.10.5",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.17",
     "@typescript-eslint/eslint-plugin": "^8.48.0",
     "@typescript-eslint/parser": "^8.48.0",
-    "@vitest/coverage-v8": "^1.3.1",
+    "@vitest/coverage-v8": "^4.0.14",
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.29.0",
+    "http-server": "^14.1.1",
     "husky": "^9.0.0",
     "lint-staged": "^15.0.0",
     "lockfile-lint": "^4.12.0",
@@ -106,11 +115,11 @@
     "react-dom": "^18.2.0",
     "rimraf": "^5.0.5",
     "standard-version": "^9.5.0",
-    "tsup": "^7.0.0",
+    "tsup": "^8.5.1",
     "typedoc": "^0.28.0",
     "typedoc-plugin-markdown": "^4.9.0",
     "typescript": "~5.5.0",
-    "vitest": "^1.3.1",
+    "vitest": "^4.0.14",
     "zustand": "^4.5.0"
   }
 }
