@@ -6,6 +6,5 @@ coverage/
 *.log
 pnpm-lock.yaml
 yarn.lock
-docs/
 examples/
 *.md
