@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DOM XPath Toolkit Fixture</title>
+  <style>
+    :root {
+      font-family: "Segoe UI", Arial, sans-serif;
+      line-height: 1.4;
+      display: block;
+      color: #1f2a37;
+      background: #f5f7fb;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f5f7fb;
+    }
+
+    header,
+    footer {
+      background: #101827;
+      color: #f9fafb;
+      padding: 1.5rem 2rem;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      gap: 1rem;
+    }
+
+    main {
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    section,
+    article,
+    aside,
+    form,
+    table,
+    fieldset,
+    details,
+    dialog,
+    figure {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 3px 12px rgba(15, 23, 42, 0.12);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 1px solid #d1d5db;
+      padding: 0.4rem 0.6rem;
+      text-align: left;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .card {
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      background: linear-gradient(135deg, #eef2ff 0%, #fdf2f8 100%);
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .pill {
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      background: #e0f2fe;
+      border: 1px solid #7dd3fc;
+      font-size: 0.85rem;
+    }
+
+    #shadow-host,
+    #custom-elements,
+    #svg-panel,
+    #list-panel,
+    #summary-panel {
+      min-height: 150px;
+    }
+
+    iframe {
+      width: 100%;
+      border: 1px solid #cbd5f5;
+      border-radius: 0.5rem;
+      min-height: 200px;
+    }
+
+    dialog {
+      border: 2px solid #312e81;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>DOM XPath Toolkit Fixture</h1>
+    <p>A dense playground page that contains a wide variety of elements and edge cases.</p>
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="#forms">Forms</a></li>
+        <li><a href="#tables">Tables</a></li>
+        <li><a href="#svg-panel">SVG</a></li>
+        <li><a href="#shadow-host">Shadow DOM</a></li>
+        <li><a href="#dynamic">Dynamic Nodes</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="forms">
+      <h2>Forms and Inputs</h2>
+      <form id="login-form">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" placeholder="name@example.com" required />
+
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" minlength="8" />
+
+        <fieldset>
+          <legend>Preferences</legend>
+          <label><input type="checkbox" name="newsletter" checked /> Subscribe</label>
+          <label><input type="radio" name="theme" value="light" checked /> Light</label>
+          <label><input type="radio" name="theme" value="dark" /> Dark</label>
+        </fieldset>
+
+        <label for="role">Role</label>
+        <select id="role" name="role">
+          <option value="admin">Admin</option>
+          <option value="editor">Editor</option>
+          <option value="viewer">Viewer</option>
+        </select>
+
+        <label for="bio">Bio</label>
+        <textarea id="bio" name="bio" rows="3">Pre-filled bio text.</textarea>
+
+        <button type="submit">Submit</button>
+      </form>
+    </section>
+
+    <section id="tables">
+      <h2>Tabular Data</h2>
+      <table>
+        <caption>Quarterly Revenue</caption>
+        <thead>
+          <tr>
+            <th scope="col">Quarter</th>
+            <th scope="col">Region</th>
+            <th scope="col">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Q1</th>
+            <td>North America</td>
+            <td>$1.2M</td>
+          </tr>
+          <tr>
+            <th scope="row">Q2</th>
+            <td>Europe</td>
+            <td>$980K</td>
+          </tr>
+          <tr>
+            <th scope="row">Q3</th>
+            <td>Asia-Pacific</td>
+            <td>$1.4M</td>
+          </tr>
+          <tr>
+            <th scope="row">Q4</th>
+            <td>Latin America</td>
+            <td>$750K</td>
+          </tr>
+        </tbody>
+      </table>
+      <details id="summary-panel">
+        <summary>Revenue Notes</summary>
+        <p>This block mixes details, summary, paragraphs, strong, and <a href="#">links</a>.</p>
+      </details>
+    </section>
+
+    <section id="list-panel">
+      <h2>Lists and Cards</h2>
+      <ol>
+        <li>Ordered item one</li>
+        <li>Ordered item two
+          <ul>
+            <li>Nested unordered item</li>
+            <li>Another nested item</li>
+          </ul>
+        </li>
+        <li>Ordered item three</li>
+      </ol>
+      <div class="card-grid">
+        <section class="card" data-kind="feature">
+          <h3>Feature Card</h3>
+          <p>Uses data attributes, headings, and paragraphs.</p>
+        </section>
+        <section class="card" data-kind="warning">
+          <h3>Warning Card</h3>
+          <p>Contains <code>&lt;code&gt;</code> samples and <strong>bold text</strong>.</p>
+        </section>
+        <section class="card" data-kind="success">
+          <h3>Success Card</h3>
+          <p>Has <em>emphasis</em> and <span class="pill">status-pill</span>.</p>
+        </section>
+      </div>
+      <div class="pill-list">
+        <span class="pill" data-tag="alpha">Alpha</span>
+        <span class="pill" data-tag="beta">Beta</span>
+        <span class="pill" data-tag="gamma">Gamma</span>
+        <span class="pill" data-tag="delta">Delta</span>
+      </div>
+    </section>
+
+    <article id="content-block">
+      <header>
+        <h2>Article Section</h2>
+        <p>Mixes semantic article, header, footer, and aside content.</p>
+      </header>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer volutpat turpis
+        non velit cursus, vitae luctus sem venenatis.
+      </p>
+      <aside>
+        <h3>Aside Panel</h3>
+        <p>Contains small side content with <abbr title="HyperText Markup Language">HTML</abbr> inline tags.</p>
+      </aside>
+      <footer>
+        <p>Article footer with <time datetime="2025-11-27">Nov 27 2025</time>.</p>
+      </footer>
+    </article>
+
+    <section id="media-panel">
+      <h2>Media Elements</h2>
+      <figure>
+        <img src="https://via.placeholder.com/320x180" alt="Placeholder" width="320" height="180" />
+        <figcaption>Image figure block.</figcaption>
+      </figure>
+      <figure>
+        <video controls width="320">
+          <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <figcaption>Video figure block.</figcaption>
+      </figure>
+    </section>
+
+    <section id="svg-panel">
+      <h2>SVG & Canvas</h2>
+      <svg viewBox="0 0 120 120" width="180" height="180" role="img" aria-label="Concentric circles">
+        <circle cx="60" cy="60" r="50" fill="#dbeafe" stroke="#1d4ed8" stroke-width="4" />
+        <circle cx="60" cy="60" r="30" fill="#fcd34d" stroke="#92400e" stroke-width="2" />
+      </svg>
+      <canvas id="canvas" width="200" height="200"></canvas>
+    </section>
+
+    <section id="iframe-panel">
+      <h2>Embedded Frame</h2>
+      <iframe title="Inline Sample" srcdoc="<!doctype html><html><body><p>Iframe content <span id='iframe-span'>inside</span>.</p></body></html>"></iframe>
+    </section>
+
+    <section id="shadow-host" aria-label="Shadow DOM Host">
+      <h2>Shadow DOM</h2>
+      <p>This section becomes host for a shadow root.</p>
+    </section>
+
+    <section id="custom-elements">
+      <h2>Custom Elements</h2>
+      <demo-card tier="gold">Projected slot content</demo-card>
+      <demo-card tier="platinum">
+        <span slot="title">Custom Title</span>
+        <span slot="footer">Footer slot text</span>
+      </demo-card>
+    </section>
+
+    <section id="dynamic">
+      <h2>Dynamic Content</h2>
+      <button id="add-node">Add Dynamic List Item</button>
+      <ul id="dynamic-list">
+        <li data-seq="1">Static item 1</li>
+        <li data-seq="2">Static item 2</li>
+      </ul>
+      <template id="dynamic-template">
+        <li class="dynamic-item">Template-generated item</li>
+      </template>
+    </section>
+
+    <section id="dialog-panel">
+      <h2>Dialog & Form Controls</h2>
+      <dialog id="sample-dialog" open>
+        <form method="dialog">
+          <p><label>Dialog Input <input name="dialog-input" /></label></p>
+          <menu>
+            <button value="cancel">Cancel</button>
+            <button value="confirm">Confirm</button>
+          </menu>
+        </form>
+      </dialog>
+    </section>
+  </main>
+
+  <footer>
+    <p>Fixture footer with <small>&copy; 2025 Playground Corp.</small></p>
+  </footer>
+
+  <template id="demo-card-template">
+    <style>
+      .wrapper {
+        border: 1px solid #c7d2fe;
+        border-radius: 0.75rem;
+        padding: 0.75rem;
+        display: block;
+        background: #eef2ff;
+      }
+      .title {
+        font-weight: 600;
+      }
+      .footer {
+        font-size: 0.85rem;
+        color: #4b5563;
+      }
+    </style>
+    <article class="wrapper">
+      <header class="title"><slot name="title">Demo Card</slot></header>
+      <p><slot>Default slot content</slot></p>
+      <footer class="footer"><slot name="footer">Footer slot</slot></footer>
+    </article>
+  </template>
+
+  <script>
+    // Paint something on the canvas for richer DOM
+    (function paintCanvas() {
+      const canvas = document.getElementById("canvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const gradient = ctx.createLinearGradient(0, 0, 200, 200);
+      gradient.addColorStop(0, "#a5b4fc");
+      gradient.addColorStop(1, "#f472b6");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 200, 200);
+      ctx.fillStyle = "#1f2937";
+      ctx.font = "16px Segoe UI";
+      ctx.fillText("Canvas Text", 40, 100);
+    })();
+
+    // Shadow DOM with nested elements
+    (function attachShadow() {
+      const host = document.getElementById("shadow-host");
+      if (!host) return;
+      const root = host.attachShadow({ mode: "open" });
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = `
+        <style>
+          .shadow-card {
+            border: 1px dashed #fbbf24;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background: #fff7ed;
+          }
+        </style>
+        <div class="shadow-card">
+          <p>Shadow DOM content <span class="shadow-pill">inside</span>.</p>
+          <button part="shadow-button">Shadow Button</button>
+        </div>
+      `;
+      root.appendChild(wrapper);
+    })();
+
+    // Simple custom element using template
+    class DemoCard extends HTMLElement {
+      constructor() {
+        super();
+        const template = document.getElementById("demo-card-template");
+        const content = template.content.cloneNode(true);
+        this.attachShadow({ mode: "open" }).appendChild(content);
+      }
+    }
+    customElements.define("demo-card", DemoCard);
+
+    // Dynamic node insertion
+    document.getElementById("add-node")?.addEventListener("click", () => {
+      const list = document.getElementById("dynamic-list");
+      const template = document.getElementById("dynamic-template");
+      if (!list || !template) return;
+      const clone = template.content.cloneNode(true);
+      const count = list.children.length + 1;
+      clone.firstElementChild.setAttribute("data-seq", String(count));
+      clone.firstElementChild.textContent = `Dynamic item ${count}`;
+      list.appendChild(clone);
+    });
+  </script>
+</body>
+</html>
