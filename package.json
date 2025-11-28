@@ -1,7 +1,7 @@
 {
   "name": "dom-xpath-toolkit",
-  "version": "0.2.0",
-  "description": "Robust utilities for generating and resolving DOM XPath expressions with element helper functions.",
+  "version": "0.1.0",
+  "description": "Stable XPath generation and helper utilities for browsers, headless runs, and TypeScript-ready Node tooling.",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -56,7 +56,8 @@
     "docs:dev": "next dev docs/interactive-site",
     "docs:build": "next build docs/interactive-site && next export docs/interactive-site --outdir docs/interactive-site/out",
     "docs:api": "typedoc",
-    "playground:sync": "node examples/playground/scripts/sync-toolkit.cjs",
+    "playground:install": "cd examples/playground && npm install dom-xpath-toolkit@latest",
+    "playground:build": "node scripts/build-playground.mjs",
     "fixture:serve": "http-server . -p 4173 -c-1 --cors",
     "preplaywright:test": "yarn build",
     "playwright:test": "playwright test",
@@ -69,18 +70,21 @@
     "dom",
     "browser",
     "selection",
-    "utilities"
+    "utilities",
+    "testing",
+    "playwright",
+    "selector"
   ],
-  "author": "",
+  "author": "Jay Malli",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourname/dom-xpath-toolkit.git"
+    "url": "https://github.com/JayMalli/dom-xpath-toolkit"
   },
   "bugs": {
-    "url": "https://github.com/yourname/dom-xpath-toolkit/issues"
+    "url": "https://github.com/JayMalli/dom-xpath-toolkit/issues"
   },
-  "homepage": "https://github.com/yourname/dom-xpath-toolkit#readme",
+  "homepage": " https://jaymalli.github.io/dom-xpath-toolkit",
   "engines": {
     "node": ">=18.18.0"
   },

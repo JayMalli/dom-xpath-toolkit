@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DOM XPath Toolkit Playground</title>
+    <link rel="icon" type="image/svg+xml" href="icon-light.svg" />
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "dom-xpath-toolkit": "./vendor/dom-xpath-toolkit.js"
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div>
+        <img src="logo-light.svg" alt="DOM XPath Toolkit" width="200" height="60" style="margin-bottom: 1rem;" />
+        <h1>XPath Playground</h1>
+        <p>Test drive every API in seconds. Choose a function, tweak the inputs, and watch XPath magic happen live in your browser.</p>
+      </div>
+    </header>
+
+    <main class="stack">
+      <section class="split-panel">
+        <article class="panel control-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Function Runner</h2>
+              <p>Select a function, configure options, and run it against the test DOM surface below to see real results.</p>
+            </div>
+            <button id="run-button" type="button"><i data-lucide="play"></i>Run Function</button>
+          </div>
+
+          <label class="field">
+            <span>Function</span>
+            <select id="function-select"></select>
+          </label>
+
+          <div id="function-info" class="function-info"><i data-lucide="info"></i>Select a function to view quick tips.</div>
+
+          <p class="input-tip" role="note">Need sample values? Focus a field and press <kbd>Tab</kbd> to insert its placeholder example.</p>
+
+          <div id="dynamic-inputs"></div>
+        </article>
+
+        <article class="panel results-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Results</h2>
+              <p>Inspect raw output data from function execution.</p>
+            </div>
+          </div>
+
+          <pre id="result-output" class="result-view" aria-live="polite">No output yet. Run a function to see results.</pre>
+        </article>
+      </section>
+
+      <section class="panel html-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Test DOM Surface</h2>
+            <p>Live HTML workspace where functions execute and analyze elements.</p>
+          </div>
+          <div class="tabs html-tabs" role="tablist">
+            <button type="button" class="tab active" data-html-tab="default"><i data-lucide="file-text"></i>Default HTML</button>
+            <button type="button" class="tab" data-html-tab="custom"><i data-lucide="code"></i>Custom HTML</button>
+          </div>
+        </div>
+
+        <div class="html-pane" data-html-pane="default">
+          <div class="default-html-header">
+            <h4><i data-lucide="file-text"></i>Default HTML Fixture</h4>
+            <p class="helper-text">Pre-loaded sample with diverse HTML elements—perfect for testing XPath selectors and exploring toolkit functions.</p>
+          </div>
+          
+          <div class="default-html-content">
+            <div class="control-section">
+              <div class="action-group">
+                <label class="checkbox-container">
+                  <input type="checkbox" id="show-html-source">
+                  <span class="checkmark"></span>
+                  Show HTML Source
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="html-pane hidden" data-html-pane="custom">
+          <div class="custom-html-header">
+            <div class="header-top">
+              <h4><i data-lucide="code-2"></i>Load Custom HTML</h4>
+              <label class="checkbox-container">
+                <input type="checkbox" id="show-html-source-custom">
+                <span class="checkmark"></span>
+                Show HTML Source
+              </label>
+            </div>
+            <p class="helper-text">Choose a file or paste HTML to test against different markup structures.</p>
+          </div>
+          
+          <div class="custom-html-content">
+            <div class="input-section">
+              <div class="file-input-group">
+                <label class="field-label"><i data-lucide="file-upload"></i>Upload HTML File</label>
+                <div class="file-input-wrapper">
+                  <input id="file-input" type="file" accept=".html,.htm,.txt" />
+                  <div class="file-input-display">
+                    <i data-lucide="upload"></i>
+                    <span class="file-input-text">Choose HTML file...</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="divider-or">
+                <span>or</span>
+              </div>
+              
+              <div class="textarea-group">
+                <label class="field">
+                  <span class="field-label"><i data-lucide="edit-3"></i>Paste HTML Content</span>
+                  <textarea id="html-textarea" placeholder="&lt;div&gt;&#10;  &lt;h1&gt;Your custom HTML here&lt;/h1&gt;&#10;  &lt;p&gt;Test any HTML structure...&lt;/p&gt;&#10;&lt;/div&gt;"></textarea>
+                </label>
+                <button id="apply-html" type="button" class="apply-btn">
+                  <i data-lucide="play"></i>
+                  Apply HTML
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="html-views">
+          <div id="html-placeholder" class="html-placeholder placeholder hidden">
+            <div>
+              <h3>No custom HTML yet</h3>
+              <p>Use the Custom HTML tab to upload or paste markup, then it will render here.</p>
+            </div>
+          </div>
+          <div id="render-view" class="render-view" aria-live="polite"></div>
+          <pre id="source-view" class="source-view hidden"></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <h3><i data-lucide="layers"></i>DOM XPath Toolkit</h3>
+          <p>Powerful XPath utilities for modern web development</p>
+        </div>
+        <div class="footer-links">
+          <div class="link-group">
+            <h4>Resources</h4>
+            <a href="#"><i data-lucide="book-open"></i>Documentation</a>
+            <a href="#"><i data-lucide="github"></i>GitHub</a>
+            <a href="#"><i data-lucide="package"></i>NPM Package</a>
+          </div>
+          <div class="link-group">
+            <h4>Connect</h4>
+            <a href="https://linkedin.com/in/your-profile" target="_blank" rel="noopener noreferrer"><i data-lucide="linkedin"></i>LinkedIn</a>
+            <a href="https://dev.to/your-profile" target="_blank" rel="noopener noreferrer"><i data-lucide="rss"></i>Dev.to Blogs</a>
+            <a href="https://your-portfolio.com" target="_blank" rel="noopener noreferrer"><i data-lucide="user"></i>Portfolio</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 DOM XPath Toolkit • v0.1.0 • Crafted with <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" fill-rule="evenodd" height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em"><title>GithubCopilot</title><path d="M19.245 5.364c1.322 1.36 1.877 3.216 2.11 5.817.622 0 1.2.135 1.592.654l.73.964c.21.278.323.61.323.955v2.62c0 .339-.173.669-.453.868C20.239 19.602 16.157 21.5 12 21.5c-4.6 0-9.205-2.583-11.547-4.258-.28-.2-.452-.53-.453-.868v-2.62c0-.345.113-.679.321-.956l.73-.963c.392-.517.974-.654 1.593-.654l.029-.297c.25-2.446.81-4.213 2.082-5.52 2.461-2.54 5.71-2.851 7.146-2.864h.198c1.436.013 4.685.323 7.146 2.864zm-7.244 4.328c-.284 0-.613.016-.962.05-.123.447-.305.85-.57 1.108-1.05 1.023-2.316 1.18-2.994 1.18-.638 0-1.306-.13-1.851-.464-.516.165-1.012.403-1.044.996a65.882 65.882 0 00-.063 2.884l-.002.48c-.002.563-.005 1.126-.013 1.69.002.326.204.63.51.765 2.482 1.102 4.83 1.657 6.99 1.657 2.156 0 4.504-.555 6.985-1.657a.854.854 0 00.51-.766c.03-1.682.006-3.372-.076-5.053-.031-.596-.528-.83-1.046-.996-.546.333-1.212.464-1.85.464-.677 0-1.942-.157-2.993-1.18-.266-.258-.447-.661-.57-1.108-.32-.032-.64-.049-.96-.05zm-2.525 4.013c.539 0 .976.426.976.95v1.753c0 .525-.437.95-.976.95a.964.964 0 01-.976-.95v-1.752c0-.525.437-.951.976-.951zm5 0c.539 0 .976.426.976.95v1.753c0 .525-.437.95-.976.95a.964.964 0 01-.976-.95v-1.752c0-.525.437-.951.976-.951zM7.635 5.087c-1.05.102-1.935.438-2.385.906-.975 1.037-.765 3.668-.21 4.224.405.394 1.17.657 1.995.657h.09c.649-.013 1.785-.176 2.73-1.11.435-.41.705-1.433.675-2.47-.03-.834-.27-1.52-.63-1.813-.39-.336-1.275-.482-2.265-.394zm6.465.394c-.36.292-.6.98-.63 1.813-.03 1.037.24 2.06.675 2.47.968.957 2.136 1.104 2.776 1.11h.044c.825 0 1.59-.263 1.995-.657.555-.556.765-3.187-.21-4.224-.45-.468-1.335-.804-2.385-.906-.99-.088-1.875.058-2.265.394zM12 7.615c-.24 0-.525.015-.84.044.03.16.045.336.06.526l-.001.159a2.94 2.94 0 01-.014.25c.225-.022.425-.027.612-.028h.366c.187 0 .387.006.612.028-.015-.146-.015-.277-.015-.409.015-.19.03-.365.06-.526a9.29 9.29 0 00-.84-.044z"/></svg> GitHub Copilot</p>
+      </div>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+    <script>
+      // Initialize Lucide icons
+      lucide.createIcons();
+    </script>
+  </body>
+</html>
