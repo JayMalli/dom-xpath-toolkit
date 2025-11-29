@@ -80,10 +80,22 @@ async function copyToolkitBundle(playgroundRoot, outputDir) {
   return path.relative(outputDir, toolkitTarget).replace(/\\/g, '/');
 }
 
+async function cleanupGeneratedAssets(outputDir) {
+  const filesToRemove = ['index.html', 'app.js', 'styles.css', 'logo-light.svg', 'icon-light.svg'];
+  const dirsToRemove = ['fixtures', 'vendor'];
+
+  for (const file of filesToRemove) {
+    await rm(path.join(outputDir, file), { force: true }).catch(() => {});
+  }
+  for (const dir of dirsToRemove) {
+    await rm(path.join(outputDir, dir), { recursive: true, force: true }).catch(() => {});
+  }
+}
+
 async function buildStaticBundle(playgroundRoot, publishDir) {
   const outputDir = publishDir;
-  await rm(outputDir, { recursive: true, force: true });
   await mkdir(outputDir, { recursive: true });
+  await cleanupGeneratedAssets(outputDir);
 
   const assetsToCopy = ['index.html', 'app.js', 'styles.css', 'logo-light.svg', 'icon-light.svg'];
   for (const asset of assetsToCopy) {
@@ -105,14 +117,14 @@ async function buildStaticBundle(playgroundRoot, publishDir) {
 async function main() {
   const repoRoot = path.resolve('.', '.');
   const playgroundRoot = path.join(repoRoot, 'examples', 'playground');
-  const publishRoot = path.join(repoRoot, 'docs', 'playground');
+  const publishRoot = path.join(repoRoot, 'docs');
 
   await ensurePlaygroundPackage(playgroundRoot);
   await unlinkLocalPackage(playgroundRoot);
   await installPublishedPackage(playgroundRoot);
   await buildStaticBundle(playgroundRoot, publishRoot);
 
-  console.log('Playground assets ready at docs/playground (serve via GitHub Pages).');
+  console.log('Playground assets ready directly under docs/ (serve via GitHub Pages).');
 }
 
 main().catch((error) => {
