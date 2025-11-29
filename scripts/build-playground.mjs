@@ -105,14 +105,14 @@ async function buildStaticBundle(playgroundRoot, publishDir) {
 async function main() {
   const repoRoot = path.resolve('.', '.');
   const playgroundRoot = path.join(repoRoot, 'examples', 'playground');
-  const publishRoot = path.join(repoRoot, 'playground');
+  const publishRoot = path.join(repoRoot, 'docs', 'playground');
 
   await ensurePlaygroundPackage(playgroundRoot);
   await unlinkLocalPackage(playgroundRoot);
   await installPublishedPackage(playgroundRoot);
   await buildStaticBundle(playgroundRoot, publishRoot);
 
-  console.log('Playground assets ready at playground/ (serve via GitHub Pages).');
+  console.log('Playground assets ready at docs/playground (serve via GitHub Pages).');
 }
 
 main().catch((error) => {

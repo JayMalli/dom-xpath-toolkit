@@ -84,7 +84,7 @@
   "bugs": {
     "url": "https://github.com/JayMalli/dom-xpath-toolkit/issues"
   },
-  "homepage": " https://jaymalli.github.io/dom-xpath-toolkit",
+  "homepage": "https://jaymalli.github.io/dom-xpath-toolkit",
   "engines": {
     "node": ">=18.18.0"
   },
