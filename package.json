@@ -1,6 +1,6 @@
 {
   "name": "dom-xpath-toolkit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Stable XPath generation and helper utilities for browsers, headless runs, and TypeScript-ready Node tooling.",
   "type": "module",
   "main": "./dist/index.cjs",
