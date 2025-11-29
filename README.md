@@ -15,7 +15,7 @@ Modern, framework-agnostic XPath utilities for browsers, extensions, and testing
 ## Quick links
 
 - Playground: [https://jaymalli.github.io/dom-xpath-toolkit/](https://jaymalli.github.io/dom-xpath-toolkit/)
-- API usage guide: [`TOOLKIT.md`](TOOLKIT.md)
+- API usage guide: [<a href="TOOLKIT.md"><img alt="docs" src="https://img.shields.io/badge/docs-typedoc-6366f1"></a>](TOOLKIT.md)
 
 ## Why this toolkit?
 
@@ -62,13 +62,6 @@ Experiment with every helper in the toolkit—XPath generation, selection captur
 
 - **Live playground** (GitHub Pages): [https://jaymalli.github.io/dom-xpath-toolkit/](https://jaymalli.github.io/dom-xpath-toolkit/)
 
-Want to host your own copy on GitHub Pages?
-
-1. `yarn playground:install` (installs the published package in `examples/playground`).
-2. `yarn playground:build` (copies the assets + toolkit bundle directly into the `docs/` folder).
-3. Point GitHub Pages at `main` → `/docs` (Project → Pages → Build and deployment → Source: Deploy from branch, Folder: `/docs`).
-4. Optional: `npx http-server docs -p 4173` to smoke-test the static build before pushing.
-
 Features available in the playground:
 
 1. Inspect any element and copy the generated XPath or resolved selectors.
@@ -79,7 +72,8 @@ Features available in the playground:
 
 ## API usage docs
 
-- **Full reference**: The Toolkit README (`TOOLKIT.md`) documents every export (functions, types, CLI equivalents) with tables describing arguments, defaults, and return values.
+- **Full reference**: The  <a href="TOOLKIT.md">Toolkit README</a>
+ documents every export (functions, types, CLI equivalents) with tables describing arguments, defaults, and return values.
 - **Workflow tips**: Each section in the Toolkit README includes “When to use it” notes so you can pick the right helper for selection capture, XPath comparison, or DOM traversal insights.
 - **Extensibility guidance**: The same document explains how to register custom heuristics, override attribute preference order, and plug the toolkit into headless or extension contexts.
 

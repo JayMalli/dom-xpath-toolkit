@@ -13,7 +13,7 @@ We support the most recent minor release of `dom-xpath-toolkit`. Older versions 
 Please report security issues privately before public disclosure:
 
 - Open a confidential advisory: https://github.com/JayMalli/dom-xpath-toolkit/security/advisories/new
-- Email: jay.malli.m@gmail.com (PGP: `0xDEADBEEF`)
+- Email: jay.malli.m@gmail.com
 
 Include:
 
@@ -34,4 +34,4 @@ Emergency fixes will be published as soon as a tested patch is ready.
 
 - Run `npm run security:test` before publishing new versions.
 - Use `npm run security:report` to surface contact details and supported versions.
-- See [`docs/security-threat-model.md`](docs/security-threat-model.md) for in-depth threat modelling and mitigation guidance.
+- See [`security-threat-model.md`](security-threat-model.md) for in-depth threat modelling and mitigation guidance.
