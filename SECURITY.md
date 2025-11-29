@@ -13,7 +13,7 @@ We support the most recent minor release of `dom-xpath-toolkit`. Older versions 
 Please report security issues privately before public disclosure:
 
 - Open a confidential advisory: https://github.com/JayMalli/dom-xpath-toolkit/security/advisories/new
-- Email: security@jaymalli.netlify.app (PGP: `0xDEADBEEF`)
+- Email: jay.malli.m@gmail.com (PGP: `0xDEADBEEF`)
 
 Include:
 
