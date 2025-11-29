@@ -15,7 +15,7 @@ Modern, framework-agnostic XPath utilities for browsers, extensions, and testing
 ## Quick links
 
 - Playground: [https://jaymalli.github.io/dom-xpath-toolkit/](https://jaymalli.github.io/dom-xpath-toolkit/)
-- API usage guide: [<a href="TOOLKIT.md"><img alt="docs" src="https://img.shields.io/badge/docs-typedoc-6366f1"></a>](TOOLKIT.md)
+- API usage guide: [<a href="TOOLKIT.md">Toolkit</a>](TOOLKIT.md)
 
 ## Why this toolkit?
 

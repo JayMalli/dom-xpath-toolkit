@@ -34,4 +34,4 @@ Emergency fixes will be published as soon as a tested patch is ready.
 
 - Run `npm run security:test` before publishing new versions.
 - Use `npm run security:report` to surface contact details and supported versions.
-- See [`security-threat-model.md`](security-threat-model.md) for in-depth threat modelling and mitigation guidance.
+- See [`SECURITY_THREAT_MODEL.md`](SECURITY_THREAT_MODEL.md) for in-depth threat modelling and mitigation guidance.
